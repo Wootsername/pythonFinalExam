@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 style="text-align:center; margin-top:18px;">Student Records</h2>
+
+<table id="recordsTable" style="width:90%; margin:20px auto; border-collapse:collapse;">
+  <thead>
+    <tr>
+      <th>ID</th><th>IDNO</th><th>Lastname</th><th>Firstname</th><th>Course</th><th>Level</th><th>Photo</th><th>QR</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for s in students %}
+    <tr>
+      <td>{{ s.id }}</td>
+      <td>{{ s.idno }}</td>
+      <td>{{ s.lastname }}</td>
+      <td>{{ s.firstname }}</td>
+      <td>{{ s.course }}</td>
+      <td>{{ s.level }}</td>
+      <td><img src="{{ url_for('static', filename='uploads/' ~ s.photo_path) }}" width="80"></td>
+      <td><img src="{{ url_for('static', filename='uploads/' ~ s.qr_path) }}" width="80"></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

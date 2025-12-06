@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Python Student Capture System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <!-- BLUE HEADER BAR -->
+    <header class="top-header">
+        <span class="header-title">Python Student Capture System</span>
+        <span class="header-section">10:30 - 12:01 MW</span>
+    </header>
+
+    <!-- TOAST NOTIFICATIONS -->
+    <div id="toastContainer"></div>
+
+    {% block content %}{% endblock %}
+
+    <!-- COPYRIGHT -->
+    <footer class="footer-bar">
+        Copyright © Karl Gaviola, 2025
+    </footer>
+
+    {% block scripts %}{% endblock %}
+
+</body>
+</html>

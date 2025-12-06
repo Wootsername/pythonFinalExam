@@ -1,0 +1,378 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="canvas">
+    <div class="layout">
+
+        <!-- LEFT PANEL -->
+        <div class="panel">
+
+            <!-- CAMERA -->
+            <div id="mycamera"></div>
+            <div id="countdown"></div>
+
+            <!-- INPUT FORM -->
+            <div class="input-box">
+                <label>IDNO</label>
+                <input id="idno" type="text">
+
+                <label>LASTNAME</label>
+                <input id="lastname" type="text">
+
+                <label>FIRSTNAME</label>
+                <input id="firstname" type="text">
+
+                <label>COURSE</label>
+                <select id="course">
+                    {% for c in courses %}
+                    <option>{{ c }}</option>
+                    {% endfor %}
+                </select>
+
+                <label>LEVEL</label>
+                <select id="level">
+                    {% for l in levels %}
+                    <option>{{ l }}</option>
+                    {% endfor %}
+                </select>
+
+                <!-- BUTTONS -->
+                <button id="snap" class="snap-btn">SNAP</button>
+                <button id="retakeBtn" class="snap-btn" style="display:none; background:#d63031;">RETAKE</button>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL -->
+        <div class="panel">
+
+            <!-- PHOTO PREVIEW -->
+            <img id="photoPreview"
+                 style="display:block; margin:0 auto 10px auto; width:160px; height:160px;
+                        object-fit:cover; border:1px solid #444; border-radius:6px;">
+
+            <!-- QR PREVIEW -->
+            <img id="qrPreview"
+                 style="position:absolute; top:20px; right:40px; width:120px; height:120px; border:1px solid #aaa;">
+
+            <!-- INFO CARD -->
+            <div class="info-card">
+                <div class="info-left">
+                    IDNO<br>
+                    LASTNAME<br>
+                    FIRSTNAME<br>
+                    COURSE<br>
+                    LEVEL
+                </div>
+                <div class="info-right">
+                    <span id="p_id">-</span><br>
+                    <span id="p_last">-</span><br>
+                    <span id="p_first">-</span><br>
+                    <span id="p_course">-</span><br>
+                    <span id="p_level">-</span>
+                </div>
+            </div>
+
+            <!-- ACTION BUTTONS -->
+            <div class="button-row">
+                <button id="exportPdf" class="save-btn export-btn">EXPORT PDF</button>
+                <button id="exportPng" class="save-btn export-btn">EXPORT PNG</button>
+                <button id="saveBtn" class="save-btn">SAVE</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- FLASH EFFECT -->
+<div id="flashEffect"></div>
+
+<!-- LOADING OVERLAY -->
+<div id="loadingOverlay"><div class="loader"></div></div>
+
+{% block scripts %}
+
+<!-- WEBCAMJS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.min.js"></script>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    let snapBtn = document.getElementById("snap");
+    let retakeBtn = document.getElementById("retakeBtn");
+    let saveBtn = document.getElementById("saveBtn");
+
+    let webcamReady = false;
+    let lastPhotoData = null;
+    let lastSavedStudentId = null;
+    let alreadySaved = false;
+
+    /* -------------------------------------
+       TOAST SYSTEM
+    --------------------------------------*/
+    function toast(type, msg) {
+        const container = document.getElementById("toastContainer");
+        const t = document.createElement("div");
+        t.className = `toast toast-${type}`;
+        t.textContent = msg;
+
+        container.appendChild(t);
+        setTimeout(() => t.classList.add("show"), 50);
+        setTimeout(() => {
+            t.classList.remove("show");
+            setTimeout(() => t.remove(), 300);
+        }, 3000);
+    }
+
+
+    /* -------------------------------------
+       INPUT VALIDATION
+    --------------------------------------*/
+    idno.addEventListener("input", () => {
+        idno.value = idno.value.replace(/[^0-9]/g, "");
+    });
+
+    function nameValidation(field) {
+        field.value = field.value.replace(/[^A-Za-z ]/g, "");
+    }
+
+    lastname.addEventListener("input", () => nameValidation(lastname));
+    firstname.addEventListener("input", () => nameValidation(firstname));
+
+
+    /* -------------------------------------
+       WEBCAM INITIALIZATION
+    --------------------------------------*/
+    Webcam.set({
+        width: 480,
+        height: 360,
+        image_format: 'jpeg',
+        jpeg_quality: 90,
+        flip_horiz: true
+    });
+
+    Webcam.attach('#mycamera');
+    Webcam.on('live', () => webcamReady = true);
+
+
+
+    /* -------------------------------------
+       FLASH EFFECT + COUNTDOWN
+    --------------------------------------*/
+    function flashScreen() {
+        const f = document.getElementById("flashEffect");
+        f.style.opacity = "1";
+        setTimeout(() => f.style.opacity = "0", 150);
+    }
+
+    async function startCountdown() {
+        const c = document.getElementById("countdown");
+        c.style.display = "block";
+
+        for (let i = 3; i > 0; i--) {
+            c.textContent = i;
+            await new Promise(res => setTimeout(res, 1000));
+        }
+
+        c.style.display = "none";
+    }
+
+
+    /* -------------------------------------
+       FIELD CHECKER
+    --------------------------------------*/
+    function fieldsAreValid() {
+        return (
+            idno.value.trim() &&
+            lastname.value.trim() &&
+            firstname.value.trim() &&
+            course.value &&
+            level.value
+        );
+    }
+
+
+    /* -------------------------------------
+       BUTTON HELPERS
+    --------------------------------------*/
+    function disableButton(btn) {
+        btn.classList.add("btn-disabled");
+    }
+
+    function enableButton(btn) {
+        btn.classList.remove("btn-disabled");
+    }
+
+    function showButton(btn) {
+        btn.style.display = "inline-block";
+        btn.style.opacity = "1";
+    }
+
+    function hideButton(btn) {
+        btn.style.opacity = "0";
+        setTimeout(() => btn.style.display = "none", 200);
+    }
+
+
+    /* -------------------------------------
+       SNAP BUTTON
+    --------------------------------------*/
+    snapBtn.addEventListener("click", async () => {
+
+        if (!webcamReady) {
+            toast("warning", "Camera still loading…");
+            return;
+        }
+
+        if (!fieldsAreValid()) {
+            toast("warning", "Fill all fields before snapping.");
+            return;
+        }
+
+        hideButton(snapBtn);
+        hideButton(retakeBtn);
+        disableButton(saveBtn);
+
+        await startCountdown();
+        flashScreen();
+
+        Webcam.snap((dataUri) => {
+            lastPhotoData = dataUri;
+            photoPreview.src = dataUri;
+
+            p_id.textContent = idno.value;
+            p_last.textContent = lastname.value;
+            p_first.textContent = firstname.value;
+            p_course.textContent = course.value;
+            p_level.textContent = level.value;
+
+            enableButton(saveBtn);
+            showButton(retakeBtn);
+
+            toast("success", "Photo captured!");
+        });
+    });
+
+
+    /* -------------------------------------
+       RETAKE BUTTON
+    --------------------------------------*/
+    retakeBtn.addEventListener("click", () => {
+
+        lastPhotoData = null;
+        photoPreview.src = "";
+        qrPreview.src = "";
+
+        p_id.textContent = "-";
+        p_last.textContent = "-";
+        p_first.textContent = "-";
+        p_course.textContent = "-";
+        p_level.textContent = "-";
+
+        alreadySaved = false;
+
+        hideButton(retakeBtn);
+        showButton(snapBtn);
+        disableButton(saveBtn);
+
+        toast("warning", "Please take a new photo.");
+    });
+
+
+    /* -------------------------------------
+       SAVE BUTTON
+    --------------------------------------*/
+    saveBtn.addEventListener("click", async () => {
+
+        if (saveBtn.classList.contains("btn-disabled")) {
+            toast("warning", "Snap a photo first.");
+            return;
+        }
+
+        if (!lastPhotoData) {
+            toast("error", "Missing photo. Snap again.");
+            return;
+        }
+
+        if (alreadySaved) {
+            toast("warning", "Already saved!");
+            return;
+        }
+
+        showLoading();
+
+        let payload = {
+            idno: idno.value.trim(),
+            lastname: lastname.value.trim(),
+            firstname: firstname.value.trim(),
+            course: course.value,
+            level: level.value,
+            photo_data: lastPhotoData
+        };
+
+        const res = await fetch("/save", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(payload)
+        });
+
+        const json = await res.json();
+
+        if (json.status === "ok") {
+            qrPreview.src = json.qr_url;
+            lastSavedStudentId = json.id;
+            alreadySaved = true;
+
+            toast("success", "Saved!");
+        } else {
+            toast("error", "Save failed.");
+        }
+
+        hideLoading();
+    });
+
+
+  /* -------------------------------------
+   LOADING OVERLAY HELPERS
+  --------------------------------------*/
+  function showLoading() {
+      const overlay = document.getElementById("loadingOverlay");
+      overlay.style.display = "flex";
+  }
+
+  function hideLoading() {
+      const overlay = document.getElementById("loadingOverlay");
+      overlay.style.display = "none";
+  }
+
+
+    /* -------------------------------------
+       EXPORT BUTTONS
+    --------------------------------------*/
+    function downloadFile(url) {
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+}
+
+exportPng.onclick = () => {
+    if (!lastSavedStudentId) return toast("warning", "Save first.");
+    downloadFile(`/export/png/${lastSavedStudentId}`);
+};
+
+exportPdf.onclick = () => {
+    if (!lastSavedStudentId) return toast("warning", "Save first.");
+    downloadFile(`/export/pdf/${lastSavedStudentId}`);
+};
+
+
+});
+
+</script>
+
+
+{% endblock %}
+{% endblock %}
