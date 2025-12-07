@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Login</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+        margin: 0;
+        background: linear-gradient(to bottom right, #f5f7ff, #e6e8f9);
+    }
+
+    /* TOP BAR */
+    .top-bar {
+        background: #3f45c5;
+        color: white;
+        padding: 12px 18px;
+        font-size: 17px;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+    }
+
+    /* MAIN BORDER */
+    .main-container {
+        border: 1px solid #cfcfcf;
+        margin: 10px;
+        min-height: 95vh;
+        display: flex;
+        flex-direction: column;
+        background: white;
+    }
+
+    /* CENTER CONTENT */
+    .center-wrapper {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px 0;
+    }
+
+    /* LOGIN BOX */
+    .login-box {
+        width: 360px;
+        padding: 35px 30px;
+        border-radius: 12px;
+        background: #ffffff;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        text-align: center;
+    }
+
+    .login-box:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+    }
+
+    .login-title {
+        color: #3f45c5;
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+
+    /* FULL WIDTH LINE */
+    .title-line {
+        width: 100%;
+        height: 2px;
+        background: #3f45c5;
+        border-radius: 2px;
+        margin: 0 auto 25px;
+    }
+
+    /* INPUTS */
+    .login-box input {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 22px;
+        border: 1px solid #b8b8b8;
+        border-radius: 8px;
+        background: #fafafa;
+        font-size: 15px;
+        transition: border 0.25s ease, background 0.25s ease;
+    }
+
+    .login-box input:focus {
+        border: 1.5px solid #3f45c5;
+        background: #ffffff;
+        outline: none;
+    }
+
+    .login-box button {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        background: #3f45c5;
+        color: white;
+        font-weight: 600;
+        font-size: 15px;
+        cursor: pointer;
+        transition: background 0.25s ease, transform 0.15s ease;
+    }
+
+    .login-box button:hover {
+        background: #353bb1;
+        transform: translateY(-2px);
+    }
+
+    /* FOOTER */
+    .footer {
+        text-align: center;
+        padding: 10px;
+        font-size: 12px;
+        color: gray;
+    }
+
+    .footer-line {
+        height: 1px;
+        width: 95%;
+        background: #bcbcbc;
+        margin: 10px auto 5px;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="main-container">
+
+    <div class="top-bar">
+        Python(12203) 8:00 - 10:30 MW
+    </div>
+
+    <div class="center-wrapper">
+        <div class="login-box">
+            <div class="login-title">ADMIN LOGIN</div>
+            <div class="title-line"></div>
+
+            <input type="email" placeholder="Email" id="email">
+            <input type="password" placeholder="Password" id="password">
+
+            <button onclick="login()">LOGIN</button>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="footer-line"></div>
+        Copyright © Formentera and Gaviola, 2025
+    </div>
+
+</div>
+
+<script>
+    function login() {
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value.trim();
+
+        if (email === "" || password === "") {
+            alert("Please enter email and password");
+            return;
+        }
+
+        if (email === "admin@gmail.com" && password === "1234") {
+            localStorage.setItem("isLoggedIn", "true");
+            window.location.href = "attendance.html";
+        } else {
+            alert("Invalid login credentials");
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Management</title>
+
+    <!-- W3 CSS -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #ffffff;
+        }
+
+        /* ===== HEADER ===== */
+        .top-header {
+            background-color: #3f51b5;
+            color: white;
+            padding: 10px 20px;
+            font-weight: bold;
+        }
+
+        /* ===== LAYOUT ===== */
+        .container {
+            display: flex;
+            min-height: calc(100vh - 90px);
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: 200px;
+            background-color: #00a3e0;
+            color: white;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 14px;
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .sidebar a:hover {
+            background-color: #0088bd;
+        }
+
+        .sidebar a.active {
+            background-color: #0077a3;
+            font-weight: bold;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        .page-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .page-title {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        /* ===== CONTENT BODY ===== */
+        .content-body {
+            display: flex;
+            gap: 15px;
+        }
+
+        /* ===== STUDENT CARD ===== */
+        .student-card {
+            width: 240px;
+            padding: 18px;
+            border-radius: 12px;
+            background: #ffffff;
+            border: 1px solid #d9d9d9;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            transition: 0.2s ease;
+        }
+
+        .student-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+        }
+
+        .avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        margin: 0 auto 12px;
+        background: #e8f0ff;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        }
+
+        .avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+        }
+
+
+        .qr-box {
+        text-align: center;
+        margin-top: 2px;
+        margin-bottom: 1px;
+        }
+
+        /* More modern card text style */
+        .student-info {
+            font-size: 14px;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .student-card hr {
+            border: none;
+            border-top: 1px solid #ddd;
+            margin: 12px 0;
+        }
+
+        .qr-box img {
+            border-radius: 6px;
+            padding: 4px;
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            margin-top: 2px;
+            margin-bottom: 1px;
+
+        }
+
+        /* ===== MODERN TABLE ===== */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+
+        th {
+            background: #f4f6ff;
+            padding: 10px;
+            font-weight: bold;
+            color: #333;
+            border-bottom: 1px solid #dcdcdc;
+        }
+
+        td {
+            padding: 10px;
+            font-size: 13px;
+            border-bottom: 1px solid #e7e7e7;
+        }
+
+        /* zebra striping */
+        tbody tr:nth-child(odd) {
+            background: #ffffff;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #f7f7f7;
+        }
+
+        /* Hover effect */
+        tbody tr:hover {
+            background: #eaf2ff;
+        }
+
+        /* Action buttons */
+        .action-btn {
+            border: none;
+            padding: 6px 8px;
+            border-radius: 6px;
+            background: #f0f0f0;
+            transition: 0.15s ease;
+        }
+
+        .action-btn:hover {
+            background: #dcdcdc;
+        }
+
+        td.actions {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 6px;  /* space between icons */
+    }
+
+
+        
+        /* ===== MODERN BUTTONS ===== */
+
+        /* ADD button */
+        .page-top button {
+            background: #3f51b5 !important;
+            color: white;
+            border-radius: 8px;
+            padding: 6px 14px;
+            font-size: 13px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            transition: 0.15s ease;
+        }
+
+        .page-top button:hover {
+            background: #3647a6 !important;
+            transform: translateY(-2px);
+        }
+
+        /* UPDATE button on card */
+        .student-card button {
+            margin-top: 8px;
+            width: 100%;
+            background: #00a3e0 !important;
+            border-radius: 8px;
+            font-size: 13px;
+            color: white;
+            padding: 7px 0;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+            transition: 0.15s ease;
+        }
+
+        .student-card button:hover {
+            background: #008cc2 !important;
+            transform: translateY(-2px);
+        }
+
+
+        /* ===== FOOTER ===== */
+        .footer {
+            border-top: 1px solid #ccc;
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+            color: #555;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <div class="top-header">
+        Python(12203) 8:00 - 10:30 MW
+    </div>
+
+    <!-- BODY -->
+    <div class="container">
+
+        <!-- SIDEBAR -->
+      <div class="sidebar">
+          <a href="usermanagement.html">USER MANAGEMENT</a>
+          <a href="studentmanagement.html" class="active">STUDENT MANAGEMENT</a>
+          <a href="attendance.html">VIEW ATTENDANCE</a>
+          <a href="login.html">LOGOUT</a>
+      </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+
+            <div class="page-top">
+                <div class="page-title">STUDENT MANAGEMENT</div>
+                <button class="w3-button w3-blue w3-small">+ ADD</button>
+            </div>
+
+            <div class="content-body">
+
+                <!-- STUDENT CARD -->
+                <div class="student-card">
+
+                    <div class="avatar">
+                        <img src="images/account.png" alt="Student Avatar">
+                    </div>
+
+                    <div class="student-info">
+                        <strong>0001</strong>
+                        <hr>
+                        DURANO, DENNIS
+                        <hr>
+                        BSCPE-3
+                    </div>
+
+                    <div class="qr-box">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=0001">
+                    </div>
+
+                    <button class="w3-button w3-blue w3-small">UPDATE</button>
+
+                </div>
+
+                <!-- STUDENT TABLE -->
+                <div style="flex-grow:1;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>IDNO</th>
+                                <th>LASTNAME</th>
+                                <th>FIRSTNAME</th>
+                                <th>COURSE</th>
+                                <th>LEVEL</th>
+                                <th>ACTION</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Rows populated later -->
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td class="actions">
+                                    <span class="action-btn">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </span>
+                                    <span class="action-btn" style="color:red;">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        Copyright © Formentera and Gaviola, 2025
+    </div>
+
+<script>
+fetch("/api/students")
+  .then(res => res.json())
+  .then(data => {
+    const body = document.querySelector("tbody");
+    body.innerHTML = "";
+    data.forEach(s => {
+      body.innerHTML += `
+        <tr>
+          <td>${s.idno}</td>
+          <td>${s.lastname}</td>
+          <td>${s.firstname}</td>
+          <td>${s.course}</td>
+          <td>${s.level}</td>
+          <td class="actions">
+            <span class="action-btn"><i class="fa-solid fa-eye"></i></span>
+            <span class="action-btn" style="color:red;"><i class="fa-solid fa-xmark"></i></span>
+          </td>
+        </tr>`;
+    });
+  });
+</script>
+
+
+</body>
+</html>

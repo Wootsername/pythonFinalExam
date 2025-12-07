@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Attendance</title>
+
+    <!-- W3 CSS -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f5f6fa;
+        }
+
+        /* ===== HEADER ===== */
+        .top-header {
+            background-color: #3f51b5;
+            color: white;
+            padding: 10px 20px; /* Keep original padding */
+            font-weight: bold;
+        }
+
+        /* ===== LAYOUT ===== */
+        .container {
+            display: flex;
+            min-height: calc(100vh - 90px);
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: 200px;
+            background-color: #00a3e0;
+            color: white;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 14px;
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .sidebar a:hover {
+            background-color: #0088bd;
+        }
+
+        .sidebar a.active {
+            background-color: #0077a3;
+            font-weight: bold;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            flex-grow: 1;
+            padding: 25px;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .page-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* ===== DATE FILTER ===== */
+        .date-filter {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .date-filter label {
+            font-weight: bold;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .date-filter input[type="date"] {
+            height: 36px;
+            padding: 6px 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .date-filter input[type="date"]:focus {
+            outline: none;
+            border-color: #3f51b5;
+            box-shadow: 0 0 5px rgba(63, 81, 181, 0.3);
+        }
+
+        .date-filter button {
+            background-color: #3f51b5;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .date-filter button:hover {
+            background-color: #303f9f;
+            transform: translateY(-2px);
+        }
+
+        /* ===== TABLE ===== */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            font-size: 14px;
+            background-color: #fff;
+            margin-top: 15px;
+        }
+
+        thead {
+            background-color: #3f51b5;
+            color: white;
+        }
+
+        th, td {
+            padding: 12px 10px;
+            text-align: left;
+        }
+
+        tbody tr:nth-child(odd) {
+            background-color: #f9f9f9;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #ffffff;
+        }
+
+        tbody tr:hover {
+            background-color: #e3f2fd;
+        }
+
+        thead th {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            border-top: 1px solid #ccc;
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+            color: #555;
+            background-color: #f5f6fa;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="top-header">
+        Python(12203) 8:00 - 10:30 MW
+    </div>
+
+    <div class="container">
+
+        <div class="sidebar">
+            <a href="usermanagement.html">USER MANAGEMENT</a>
+            <a href="studentmanagement.html">STUDENT MANAGEMENT</a>
+            <a href="attendance.html" class="active">VIEW ATTENDANCE</a>
+            <a href="login.html">LOGOUT</a>
+        </div>
+
+        <div class="main-content">
+
+            <div class="page-header">
+                <div class="page-title">VIEW ATTENDANCE</div>
+
+                <div class="date-filter">
+                    <label>SELECT DATE</label>
+                    <input type="date" id="dateInput">
+                    <button onclick="filterAttendance()">GO</button>
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:60px">#</th>
+                        <th style="width:100px">IDNO</th>
+                        <th style="width:120px">LASTNAME</th>
+                        <th style="width:120px">FIRSTNAME</th>
+                        <th style="width:110px">COURSE</th>
+                        <th style="width:90px">LEVEL</th>
+                        <th style="width:80px">TIME-IN</th>
+                    </tr>
+                </thead>
+                <tbody id="attendanceBody">
+                    <tr>
+                        <td>1</td>
+                        <td>202501</td>
+                        <td>Smith</td>
+                        <td>John</td>
+                        <td>BSCS</td>
+                        <td>3</td>
+                        <td>08:05 AM</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>202502</td>
+                        <td>Doe</td>
+                        <td>Jane</td>
+                        <td>BSIT</td>
+                        <td>2</td>
+                        <td>08:10 AM</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <div class="footer">
+        Copyright © Formentera and Gaviola, 2025
+    </div>
+
+    <script>
+        function filterAttendance() {
+            const date = document.getElementById("dateInput").value;
+            if (!date) {
+                alert("Please select a date.");
+                return;
+            }
+            console.log("Selected date:", date);
+            // TODO: fetch attendance data for selected date and populate table
+        }
+    </script>
+
+</body>
+</html>
