@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Login</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+        margin: 0;
+        background: #fff;
+    }
+
+    /* TOP BAR */
+    .top-bar {
+        background: #3f45c5;
+        color: white;
+        padding: 10px 15px;
+        font-size: 17px;
+    }
+
+    /* MAIN BORDER */
+    .main-container {
+        border: 1px solid black;
+        margin: 10px;
+        min-height: 95vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* CENTER CONTENT */
+    .center-wrapper {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .login-box {
+        width: 360px;
+        height: 330px;
+        border: 1px solid black;
+        padding: 35px 30px;
+        text-align: center;
+    }
+
+    .login-title {
+        color: #3f45c5;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .title-line {
+        width: 100%;
+        height: 1px;
+        background: #3f45c5;
+        margin: 0 auto 25px;
+    }
+
+    .login-box input {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 24px;
+        border: 1px solid gray;
+        font-size: 14px;
+    }
+
+    .login-box button {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        background: #3f45c5;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    /* FOOTER */
+    .footer {
+        text-align: center;
+        padding: 10px;
+        font-size: 12px;
+        color: gray;
+    }
+
+    .footer-line {
+        height: 1px;
+        width: 95%;
+        background: #bcbcbc;
+        margin: 10px auto 5px;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="main-container">
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+        Python(12203) 8:00 - 10:30 MW
+    </div>
+
+    <!-- CENTER BOX -->
+    <div class="center-wrapper">
+        <div class="login-box">
+            <div class="login-title">ADMIN LOGIN</div>
+            <div class="title-line"></div>
+
+            <input type="email" placeholder="email" id="email">
+            <input type="password" placeholder="********" id="password">
+
+            <button onclick="login()">LOGIN</button>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <div class="footer-line"></div>
+        Copyright © Formentera and Gaviola, 2025
+    </div>
+
+</div>
+
+<script>
+    function login() {
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value.trim();
+
+        if (email === "" || password === "") {
+            alert("Please enter email and password");
+            return;
+        }
+
+        // TEMP ADMIN LOGIN (change later when backend exists)
+        if (email === "admin@gmail.com" && password === "1234") {
+            // save login state
+            localStorage.setItem("isLoggedIn", "true");
+
+            // redirect to attendance page (or dashboard)
+            window.location.href = "attendance.html";
+        } else {
+            alert("Invalid login credentials");
+        }
+    }
+</script>
+
+</body>
+</html>
